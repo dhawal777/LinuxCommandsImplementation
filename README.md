@@ -7,13 +7,14 @@ Command 1:grep
 Command 2:sed
        Syntax: sed "pattern1/pattern2" <<< "teststring"
 
-Command 1:touch
+Command 3:touch
        Syntax: touch file1 file2 file3 
        #where file path can be relative or absolute
 
 Command 4:ls
        Syntax:
               Version 1: ls path
+              
               Version 2: ls
 
 Command 5:cd
@@ -31,6 +32,6 @@ Command 8:diff
 
 Command 9:pwd
        Syntax: pwd
-       
+
 Command 10:tr
        Syntax:tr pattern1 pattern2
