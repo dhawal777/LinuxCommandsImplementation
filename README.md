@@ -13,6 +13,7 @@ Command 3:touch
 
 Command 4:ls
        Syntax:
+       
               Version 1: ls path
               
               Version 2: ls
