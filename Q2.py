@@ -140,13 +140,15 @@ while 1:
                         line1=f.readlines()
                     with open(fname2,'r') as f:
                         line2=f.readlines()
-                    line3=list(set(line1)-set(line2))
-                    line4=list(set(line2)-set(line1))
-                    for i in line3:
-                        print i
-                    print"---------------",   
-                    for i in line4:
-                        print i
+                    # line3=list(set(line1)-set(line2))
+                    # line4=list(set(line2)-set(line1))
+                    for i in line1:
+                        if i not in line2:
+                            print i
+                    print"---------------"   
+                    for i in line2:
+                        if i not in line1:
+                            print i
                 else:
                     if(isreadable(fname1)):
                            print "File2 not readable"
@@ -208,6 +210,23 @@ while 1:
                     x=s2.find(s1)
                     # grep(s1,s2)
                 sys.stdout.write(s2) 
+    def sed(s1,rep,s2):
+            x=0
+            # CRED = '\033[91m'
+            x=s2.find(s1)
+            if(x!=-1):
+                while(x!=-1):
+                    
+                    s4=s2[x:x+len(s1)]
+                    sys.stdout.write(s2[:x])
+                    sys.stdout.write(rep)
+                    s2=s2[x+len(s1):]
+                    
+                    # prRed(s4)
+                    # print(CRED +s5
+                    x=s2.find(s1)
+                    # grep(s1,s2)
+                sys.stdout.write(s2) 
                
                 
                    
@@ -261,7 +280,7 @@ while 1:
             
             # print s1
             # print s2   
-            # try:
+            try:
                 # print comm
                 input1=comm.split("<<<")
                 input2=input1[0].strip()
@@ -271,19 +290,22 @@ while 1:
                 # print input4[1]
                 # print input5[1]
                 grep(input4[1],input5[1])
-            # except:
-            #     print "Invalid Syntax for grep"
+            except:
+                print "Invalid Syntax for grep@sorry!!"
              
                   
             
 
         if(command[0]=="sed"):
-
-            head(command[0]);
-
-        if(command[0]=="awk"):
-
-            head(command[0]);
+                input1=comm.split("<<<")
+                input2=input1[0].strip()
+                input3=input1[1].strip()
+                input4=input2.split('"')
+                input6=input4[1].split('/');
+                # print input6[0],input6[1]
+                input5=input3.split('"')
+                # print input5[1]
+                sed(input6[0],input6[1],input5[1]);
 
         if(command[0]=="touch"):
 
