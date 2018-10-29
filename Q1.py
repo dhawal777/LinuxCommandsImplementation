@@ -193,24 +193,61 @@ while 1:
 
             pass
         def BuyProduct(self):
-        
-            print "Enter the Product id you want to buy"
-            id2=input()
-            pickle_in=open("dict.pickle","rb")
-            example_dict=pickle.load(pickle_in)
-            if(id2 in example_dict):
-                print "Press 1 to add this product to cart"
-                print "Press 2 to directly buy this product"
-                x=input()
-                if(x==1):
-                   self.AddToCart(id1)
-                elif(x==2):
-                   self.MakePayment(id1)
-            else:
-                print "No Product with Given id"
-      
+            pay_in=open("paydb.pickle","rb")
+            pay_dict=pickle.load(pay_in)
+            print "Payment history of User : ",self._name
+            print
+            pr=pay_dict[self.__id]
+            # pr=cartobj.getproductlist()
+            # print "Total Price : ",cartobj.gettotal()
+            for j in pr:
+                print "Name  : "+ j.getname()
+                print "Cardno: ", j.getcardno()
+                print "CardName : "+ j.getcardname()
             pass
-        def MakePayment(self,id1):
+        def MakePayment(self):
+            if(os.path.isfile("cart.pickle")):
+                        cart_in=open("cart.pickle","rb")
+                        cart_dict=pickle.load(cart_in)
+                        cart_in.close()
+                        if (self.__id in cart_dict):
+                            print "Enter Your Card Type"
+                            card_type=raw_input()
+                            print "Enter Card Number"
+                            card_num=raw_input()
+                            carobj=cart_dict[self.__id]
+                            pr=carobj.getproductlist()
+                            str1=""
+                            for i in pr:
+                                str1=str1+i.getname()+","
+                            pobj=Payment(self.__id,str1,card_type,card_num)
+                            if(os.path.isfile("paydb.pickle")):
+                                  pay_in=open("paydb.pickle","rb")
+                                  pay_dict=pickle.load(pay_in)
+                                  pay_in.close()
+                            else:
+                                  pay_dict={}
+                            if(self.__id in pay_dict):
+                                p=[]
+                                p=pay_dict[self.__id]
+                                p.append(pobj)
+                                pay_dict[self.__id]=p
+                            else:
+                                p=[]
+                                p.append(pobj)
+                                pay_dict[self.__id]=p
+                            pay_in=open("paydb.pickle","wb")
+                            pickle.dump(pay_dict,pay_in)
+                            pay_in.close()
+                            cart_in=open("cart.pickle","wb")
+                            del cart_dict[self.__id]
+                            pickle.dump(cart_dict,cart_in)
+                            cart_in.close()
+
+                        else:
+                            print "Cart Empty"
+            else:
+                print "Cart Empty"
             pass
         def AddToCart(self):
             pr=[]
@@ -239,7 +276,7 @@ while 1:
 
                         else:
                             
-                            pr.cart_dict[self.__id]=prappend(example_dict[id1])
+                            pr.append(example_dict[id1])
                             ct=Cart(1,example_dict[id1].getprice(),pr)
                             cart_dict[self.__id]=ct
                             cart_in.close()
@@ -275,10 +312,16 @@ while 1:
                 if(self.__id in cart_dict):
                     cartobj=cart_dict[self.__id]
                     pr=cartobj.getproductlist()
+                    c=0
+                    price=0
                     for j in pr:
                         if(j.getid()==id1):
+                             price=price+j.getprice()
+                             c=c+1
                              pr.remove(j)
                     cartobj.setproductlist(pr)
+                    cartobj.setproductno=cartobj.getproductno()-c
+                    cartobj.settotal(cartobj.gettotal()-price)
                     cart_dict[self.__id]=cartobj
                     cart_in=open("cart.pickle","wb")
                     pickle.dump(cart_dict,cart_in)
@@ -289,18 +332,25 @@ while 1:
                 print "Your Cart is Empty"
             pass
         def VeiwCart(self):
-            cart_in=open("cart.pickle","rb")
-            cart_dict=pickle.load(cart_in)
-            print "Cart of User : ",self._name
-            print
-            cartobj=cart_dict[self.__id]
-            pr=cartobj.getproductlist()
-            for j in pr:
-                print "Name  : "+ j.getname()
-                print "ProdID: ", j.getid()
-                print "Group : "+ j.getgroup()
-                print "SubGrp: "+ j.getsubgroup()
-                print "Price : ", j.getprice()
+            if(os.path.isfile("cart.pickle")):
+                cart_in=open("cart.pickle","rb")
+                cart_dict=pickle.load(cart_in)
+                print "Cart of User : ",self._name
+                print
+                if(self.__id in cart_dict):
+                    cartobj=cart_dict[self.__id]
+                    pr=cartobj.getproductlist()
+                    print "Total Price : ",cartobj.gettotal()
+                    for j in pr:
+                        print "Name  : "+ j.getname()
+                        print "ProdID: ", j.getid()
+                        print "Group : "+ j.getgroup()
+                        print "SubGrp: "+ j.getsubgroup()
+                        print "Price : ", j.getprice()
+                else:
+                    print "Empty Cart"
+            else:
+                print "Empty Cart"
                 
             pass
     class Guest:
@@ -380,13 +430,28 @@ while 1:
             self._NumOfProduct=NumOfProduct
         def setproductlist(self,ProductList):
             self._ProductList=ProductList
-    # class Payment:
-    #     def __init__(self,custid,prodname,cardtype,cardno):
-    #         self.__custid=cust_id
-    #         # Cart.__id=Cart.__id+1
-    #         self._prodname=NumOfProduct
-    #         self._ProductList=ProductList
-    #         self._Total=Total    
+    class Payment:
+        def __init__(self,custid,name,cardtype,cardno):
+            self.__custid=custid
+            # # Cart.__id=Cart.__id+1
+            # self._prodname=prodname
+            self.__name=name
+            self.__cardtype=cardtype
+            self.__cardno=cardno
+        def getcardno(self):
+            return self.__cardno
+        def getcardname(self):
+            return self.__cardtype
+        def setcardno(self,cardno):
+            self.__cardno=cardno
+        def setcardname(self,cardname):
+            self.__cardtype=cardname
+        def getname(self):
+            return self.__name
+        def setname(self,name):
+            self.__name=name
+            
+
         
 
 
@@ -468,7 +533,7 @@ while 1:
             if(x==2):
                 p3.BuyProduct()
             if(x==3):
-                p3.MakeProduct()
+                p3.MakePayment()
             if(x==4):
                 p3.AddToCart()
             if(x==5):
